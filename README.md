@@ -14,12 +14,12 @@ sudo apt-get install build-essential python-dev libnetfilter-queue-dev libffi-de
 
 Create a new python3.6 environment and install Python dependencies:
 ```
-python3 -m pip install -r requirements.txt
+sudo /path/to/python_environment/bin/python -m pip install -r requirements.txt
 ```
 
 **If needed** for Debian 10 systems, you can install netfilterqueue directly from Github:
 ```
-sudo python3 -m pip install --upgrade -U git+https://github.com/kti/python-netfilterqueue
+sudo /path/to/python_environment/bin/python -m pip install --upgrade -U git+https://github.com/kti/python-netfilterqueue
 ```
 
 **If needed**, on Arch systems, you can make liblibc.a available for netfilterqueue:
