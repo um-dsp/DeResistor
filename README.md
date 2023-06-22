@@ -27,6 +27,18 @@ sudo /path/to/python_environment/bin/python -m pip install --upgrade -U git+http
 sudo ln -s -f /usr/lib64/libc.a /usr/lib64/liblibc.a 
 ```
 
+Installing Harpoon: In docker experiments Harpoon is used to simulate normal background traffic. In folder
+/docker/harpoon, run:
+```
+./configure
+```
+In case of permission denied error you can access root mode with sudo `su -`. Locate the script in `DeResistor/docker/harpoon`, run `chmod 755 configure`, then run `./configure` again. Configuration status should display to your screen as it executes.
+
+After that run in the same folder:
+```
+$ make
+```
+
 ## Running on Docker
 After you make sure you install and run docker on your system use the dockerfile provided in `/docker` to build the base image:
 
