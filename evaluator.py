@@ -113,6 +113,13 @@ class Evaluator():
         self.iface = self.args.get("iface", None)
         self.runs = self.args.get("runs", 1)
         self.trw = self.args["real_time_detection"]
+        self.Geneva = self.args["Geneva"]
+        if self.Geneva==False:
+            self.alpha =0.5
+            self.beta=0.5
+        else:
+            self.alpha =0
+            self.beta=1
         print('TRW evaluation is :',self.trw)
         self.fitness_by = self.args.get("fitness_by", "avg")
 
@@ -368,36 +375,36 @@ class Evaluator():
                 
                 ### TRW code for real-time evaluation
                 if self.trw:
-                    if self.discarded==self.to_discard:
-                        print("\nUpdating TRW ratio...\n")
-                        # attempting to discard estimated normal traffic
-                        ## update the TRW ratio
-                       
-                        y=self.y_preds[-1]
-                        if y==0: # predicted as geneva traffic
-                            self.trw_ratio = self.trw_ratio*(self.theta1/self.theta0)
-                            self.history+=1
-                            self.ratio_all.append(self.trw_ratio)
-                        if y==1: # predicted as legitimate traffic
-                            self.trw_ratio = self.trw_ratio*((1-self.theta1)/(1-self.theta0))
-                            self.ratio_all.append(self.trw_ratio)
-                        # Checking for final decision
-                        if self.trw_ratio <= self.eta0:
-                            raise Exception('Geneva is detected with an accuracy of {} after {} observations. Check ML detection history: {} \n {}'.format(0.99,len(self.y_preds),self.y_preds,self.ratio_all))
-                        elif self.trw_ratio >= self.eta1:
-                            # reset ratio for currently benign sources
-                            #self.trw_ratio = (self.eta0+self.eta1)/2
-                            #'''
-                            if self.history == 0:
-                                self.trw_ratio  = (self.eta0+self.eta1)/2 # averaging both thresholds
-                            else:
-                                self.trw_ratio = (self.history/len(self.y_preds)) * self.eta0 + (1-(self.history/len(self.y_preds))) * self.eta1
-                                if self.trw_ratio<= self.eta0:
-                                    print('Reset caused an automatic detection')
+                    #if self.discarded==self.to_discard:
+                    print("\nUpdating TRW ratio...\n")
+                    # attempting to discard estimated normal traffic
+                    ## update the TRW ratio
+                   
+                    y=self.y_preds[-1]
+                    if y==0: # predicted as geneva traffic
+                        self.trw_ratio = self.trw_ratio*(self.theta1/self.theta0)
+                        self.history+=1
+                        self.ratio_all.append(self.trw_ratio)
+                    if y==1: # predicted as legitimate traffic
+                        self.trw_ratio = self.trw_ratio*((1-self.theta1)/(1-self.theta0))
+                        self.ratio_all.append(self.trw_ratio)
+                    # Checking for final decision
+                    if self.trw_ratio <= self.eta0:
+                        raise Exception('Geneva is detected with an accuracy of {} after {} observations. Check ML detection history: {} \n {}'.format(0.99,len(self.y_preds),self.y_preds,self.ratio_all))
+                    elif self.trw_ratio >= self.eta1:
+                        # reset ratio for currently benign sources
+                        #self.trw_ratio = (self.eta0+self.eta1)/2
+                        #'''
+                        if self.history == 0:
+                            self.trw_ratio  = (self.eta0+self.eta1)/2 # averaging both thresholds
+                        else:
+                            self.trw_ratio = (self.history/len(self.y_preds)) * self.eta0 + (1-(self.history/len(self.y_preds))) * self.eta1
+                            if self.trw_ratio<= self.eta0:
+                                print('Reset caused an automatic detection')
                             
-                    else:
-                        self.discarded+=1
-                        print("\n{} flows are discarded by TRW. {} discards are remaining\n".format(self.discarded,self.to_discard-self.discarded))
+                   # else:
+                   #     self.discarded+=1
+                   #     print("\n{} flows are discarded by TRW. {} discards are remaining\n".format(self.discarded,self.to_discard-self.discarded))
         
                 #####
                 detection_rate = self.detection_count/len(self.y_preds)
@@ -405,8 +412,6 @@ class Evaluator():
                 print('Detection rate :',detection_rate)
                 
                 # update fitness value as f = beta. g - alpha. P_g
-                self.alpha =0.5
-                self.beta=0.5
                 print('alpha=',self.alpha)
                 ind.fitness = self.beta*ind.fitness - self.alpha * P_g*1000# *800
                 
@@ -1013,7 +1018,7 @@ class Evaluator():
             
             
             ## Uncomment to make regular periodic pauses instead ##
-            if self.detectability != [] and self.detectability[-1]>=0.5:
+            if self.detectability != [] and self.detectability[-1]>=0.5 and self.Geneva==False:
             
             ## Uncomment for random jump ##
             # Selecting a random jump size
@@ -1133,35 +1138,35 @@ class Evaluator():
     #                    
                     ## TRW code for real-time evaluation
                     if self.trw:
-                        if self.discarded==self.to_discard:
-                            print("\nUpdating TRW ratio...\n")
-                            #if self.detectability != [] and self.detectability[-1]>=0.5 and self.discarded==0:
-                            #    self.discarded+=1
-                                
-                            #if self.discarded==self.to_discard:
-                            y=self.y_preds[-1]
-                            if y==0: # predicted as geneva traffic
-                                self.trw_ratio = self.trw_ratio*(self.theta1/self.theta0)
-                                self.history+=1
-                                self.ratio_all.append(self.trw_ratio)
-                            if y==1: # predicted as legitimate traffic
-                                self.trw_ratio = self.trw_ratio*((1-self.theta1)/(1-self.theta0))
-                                self.ratio_all.append(self.trw_ratio)
-                            # Checking for final decision
-                            if self.trw_ratio <= self.eta0:
-                                raise Exception('A normal flow is mistakingly detected as Geneva flow. Please improve your evaluation model.')
-                            elif self.trw_ratio >= self.eta1:
-                                # reset ratio for currently benign sources
-                                if self.history == 0:
-                                    self.trw_ratio  = (self.eta0+self.eta1)/2 # averaging both thresholds
-                                else:
-                                    self.trw_ratio = (self.history/len(self.y_preds)) * self.eta0 + (1-(self.history/len(self.y_preds))) * self.eta1
-                                    if self.trw_ratio<= self.eta0:
-                                        print('Reset caused an automatic detection')
+                        #if self.discarded==self.to_discard:
+                        print("\nUpdating TRW ratio...\n")
+                        #if self.detectability != [] and self.detectability[-1]>=0.5 and self.discarded==0:
+                        #    self.discarded+=1
                             
-                        else:
-                            self.discarded+=1
-                            print("\n{} flows are discarded by TRW. {} discards are remaining\n".format(self.discarded,self.to_discard-self.discarded))
+                        #if self.discarded==self.to_discard:
+                        y=self.y_preds[-1]
+                        if y==0: # predicted as geneva traffic
+                            self.trw_ratio = self.trw_ratio*(self.theta1/self.theta0)
+                            self.history+=1
+                            self.ratio_all.append(self.trw_ratio)
+                        if y==1: # predicted as legitimate traffic
+                            self.trw_ratio = self.trw_ratio*((1-self.theta1)/(1-self.theta0))
+                            self.ratio_all.append(self.trw_ratio)
+                        # Checking for final decision
+                        if self.trw_ratio <= self.eta0:
+                            raise Exception('A normal flow is mistakingly detected as Geneva flow. Please improve your evaluation model.')
+                        elif self.trw_ratio >= self.eta1:
+                            # reset ratio for currently benign sources
+                            if self.history == 0:
+                                self.trw_ratio  = (self.eta0+self.eta1)/2 # averaging both thresholds
+                            else:
+                                self.trw_ratio = (self.history/len(self.y_preds)) * self.eta0 + (1-(self.history/len(self.y_preds))) * self.eta1
+                                if self.trw_ratio<= self.eta0:
+                                    print('Reset caused an automatic detection')
+                            
+                        #else:
+                        #    self.discarded+=1
+                        #    print("\n{} flows are discarded by TRW. {} discards are remaining\n".format(self.discarded,self.to_discard-self.discarded))
                 detection_rate = self.detection_count/len(self.y_preds)
                 
                 print('Detection rate :',detection_rate)
@@ -1517,11 +1522,12 @@ def get_arg_parser(single_use=False):
     evaluation_group.add_argument('--runs', type=int, default=1, action='store', help="number of times each individual should be run per evaluation")
     evaluation_group.add_argument("--fitness-by", action='store', choices=('min', 'avg', 'max'), default='avg', help="if each individual is run multiple times, control how fitness is assigned.")
     evaluation_group.add_argument('--no-skip-empty', action='store_true', help="evaluate empty strategies (default: False).")
-    evaluation_group.add_argument('--real-time-detection', action='store_true', help="enables [TRW] or [LSTM] for real-time detection evaluation (default: False")
+    evaluation_group.add_argument('--real-time-detection', action='store_true', help="enables [TRW] for real-time detection evaluation (default: False")
     evaluation_group.add_argument('--random-jump', action='store_true', help="enables randomizing the jump size of background normal traffic")
     evaluation_group.add_argument('--jump', type=int, default=0, action='store', help="number of times dummy evaluations after a detected strategy")
     evaluation_group.add_argument("--local-model", action='store', default='rfc.joblib', help="Specify DeResistor's training local model name")
     evaluation_group.add_argument("--censor-model", action='store', default='rfc.joblib', help="Specify the censor's testing model name")
+    evaluation_group.add_argument('--Geneva', action='store_true', help="Disavles all DeResistor functionalities and run normal Geneva")
     
     return parser
 
