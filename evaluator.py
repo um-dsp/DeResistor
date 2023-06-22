@@ -162,8 +162,8 @@ class Evaluator():
        
         if self.random_jump:
             self.max_jump=self.jump
-        self.alpha = 0.5
-        self.beta = 0.5
+        #self.alpha = 0.5
+        #self.beta = 0.5
         if self.trw:
             self.discarded=0
             self.to_discard=0
