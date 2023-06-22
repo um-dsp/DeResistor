@@ -499,10 +499,10 @@ class Evaluator():
             logger (:obj:`logging.Logger`): A logger to log with
         """
         
-        command = ["docker", "exec", "--privileged","--detach",environment["benign_server"]["container"].name, "code/docker/harpoon/src/harpoon", "-f", "code/docker/harpoon/examples/tcp_server_ex2.xml", "-c"]
+        command = ["docker", "exec", "--privileged","--detach",environment["benign_server"]["container"].name, "code/docker/harpoon/src/harpoon", "-f", "code/docker/harpoon/examples/docker_server.xml", "-c"]
         self.exec_cmd(command)
         
-        command = ["docker", "exec", "--privileged","--detach",environment["client"]["container"].name, "code/docker/harpoon/src/harpoon", "-f", "code/docker/harpoon/examples/tcp_client_ex2.xml", "-c"]
+        command = ["docker", "exec", "--privileged","--detach",environment["client"]["container"].name, "code/docker/harpoon/src/harpoon", "-f", "code/docker/harpoon/examples/docker_client.xml", "-c"]
         self.exec_cmd(command)
         
     
