@@ -27,6 +27,19 @@ sudo /path/to/python_environment/bin/python -m pip install --upgrade -U git+http
 sudo ln -s -f /usr/lib64/libc.a /usr/lib64/liblibc.a 
 ```
 
+## Running on Docker
+
+After you make sure you install and run docker on your system use the dockerfile provided in `/docker` to build the base image:
+
+```
+sudo docker build -t base:latest -f docker/Dockerfile .
+```
+
+Optionally, to manually run/inspect the docker image to explore the image, run:
+```
+sudo docker run -it base
+```
+
 Installing Harpoon: In docker experiments Harpoon is used to simulate normal background traffic. In folder
 /docker/harpoon, run:
 ```
@@ -39,17 +52,6 @@ After that run in the same folder:
 $ make
 ```
 
-## Running on Docker
-After you make sure you install and run docker on your system use the dockerfile provided in `/docker` to build the base image:
-
-```
-sudo docker build -t base:latest -f docker/Dockerfile .
-```
-
-Optionally, to manually run/inspect the docker image to explore the image, run:
-```
-sudo docker run -it base
-```
 You can run DeResistor against the 11  mock censors `censor1,..,censor11` defined in `/censors` using:
 ```
 sudo /path/to/python_environment/bin/python evolve.py --censor censor3 --server forbidden.org --log debug --workers 1 --runs 1 --population 100 --generation 5 --jump 1
