@@ -1013,7 +1013,7 @@ class Evaluator():
                     # reset discarding process
                     self.to_discard=random.choice(range(3))
                     self.discarded=0
-                    print("The TRW will discard {} flows".format(self.to_discard))
+                    #print("The TRW will discard {} flows".format(self.to_discard))
             eid, fitness = self.run_test(environment, ind)
             
             
