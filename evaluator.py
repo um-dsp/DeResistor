@@ -243,7 +243,7 @@ class Evaluator():
         
         
 
-        return ind_list, self.detectability
+        return ind_list#, self.detectability
 
     def run_test(self, environment, ind, benign=0):
         """
