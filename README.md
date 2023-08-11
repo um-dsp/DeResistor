@@ -1,7 +1,7 @@
 # DeResistor
 DeResistor is a research project that provides a system extension to protect Probing for Evasion of Internet Censorship from detection. Specifically, DeResistor offers IP address protection for internet users that are running automated tools for censorship measurments and evasion (e.g. Geneva)
 
-In this repo, we provide an instance of DeResistor implemented on top of Geneva ([Code](https://github.com/Kkevsterrr/geneva), [Docs](https://geneva.readthedocs.io/en/latest/)). DeResistor leverages Machine Learning techniques to model a censor-side flow-level detector and use it to guide Geneva genitic evolution towards more detection-resilient evasion strategies. Additionnaly, DeResistor introduces guided-pauses of censorship evasion attempts and interleaving them with normal user-driven network activity to comfuse IP-level detection. [Details of DeResistor are in our USENIX Security 2023 paper](https://www.usenix.org/system/files/usenixsecurity23-amich.pdf).
+In this repo, we provide an instance of DeResistor implemented on top of Geneva ([Code](https://github.com/Kkevsterrr/geneva), [Docs](https://geneva.readthedocs.io/en/latest/)). DeResistor leverages Machine Learning techniques to model a censor-side flow-level detector and use it to guide Geneva genitic evolution towards more detection-resilient evasion strategies. Additionnaly, DeResistor introduces guided-pauses of censorship evasion attempts and interleaving them with normal user-driven network activity to comfuse IP-level detection. Details of DeResistor are in our [USENIX Security 2023 paper](https://www.usenix.org/system/files/usenixsecurity23-amich.pdf).
 
 ## Setup
 
